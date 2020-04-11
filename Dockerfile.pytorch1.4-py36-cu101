@@ -111,7 +111,7 @@ cd $(mktemp -d) && \
 git clone -q https://github.com/NVIDIA/apex.git && \
 cd apex && \
 git reset --hard 80b90b9d43e343c7d4df7f6081a4ceaee2d3c348 && \
-$PIP_INSTALL -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--deprecated_fused_adam" ./ && \
+$PIP_INSTALL -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--deprecated_fused_adam" --global-option="--fast_multihead_attn" ./ && \
 
 # ==================================================================
 # blobfuse
