@@ -39,6 +39,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         curl \
         unzip \
         unrar \
+        net-tools \
         && \
 
     $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
@@ -86,6 +87,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         methodtools \
         pathlib \
         regex \
+        cython \
         && \
 
 # ==================================================================
