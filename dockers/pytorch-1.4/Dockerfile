@@ -8,6 +8,7 @@
 
 FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 ENV LANG C.UTF-8
+ENV OFED_VERSION=4.4-1.0.0.0
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     PIP_INSTALL="python -m pip install --upgrade --no-cache-dir --retries 10 --timeout 60" && \
     GIT_CLONE="git clone --depth 10" && \
@@ -105,6 +106,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # IB
 # ------------------------------------------------------------------
 # Install Mellanox OFED user-mode drivers and its prereqs
+cd $(mktemp -d) && \
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
     # For MLNX OFED
