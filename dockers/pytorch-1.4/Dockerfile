@@ -101,7 +101,59 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         && \
     $PIP_INSTALL torch torchvision \
         && \
-     
+# ==================================================================
+# IB
+# ------------------------------------------------------------------
+# Install Mellanox OFED user-mode drivers and its prereqs
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y --no-install-recommends \
+    # For MLNX OFED
+        dnsutils \
+        pciutils \
+        ethtool \
+        lsof \
+        python-libxml2 \
+        quilt \
+        libltdl-dev \
+        dpatch \
+        autotools-dev \
+        graphviz \
+        autoconf \
+        chrpath \
+        swig \
+        automake \
+        tk8.5 \
+        tcl8.5 \
+        libgfortran3 \
+        tcl \
+        libnl-3-200 \
+        libnl-route-3-200 \
+        libnl-route-3-dev \
+        libnl-utils \
+        gfortran \
+        tk \
+        bison \
+        flex \
+        libnuma1 \
+        checkinstall && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/* && \
+    # libnl1 is not available in ubuntu16 so build from source
+    wget -q -O - http://www.infradead.org/~tgr/libnl/files/libnl-1.1.4.tar.gz | tar xzf - && \
+    cd libnl-1.1.4 && \
+    ./configure && \
+    make && \
+    checkinstall -D --showinstall=no --install=yes -y -pkgname=libnl1 -A amd64 && \
+    cd .. && \
+    rm -rf libnl-1.1.4 && \
+    wget -q -O - http://www.mellanox.com/downloads/ofed/MLNX_OFED-$OFED_VERSION/MLNX_OFED_LINUX-$OFED_VERSION-ubuntu18.04-x86_64.tgz | tar xzf - && \
+    cd MLNX_OFED_LINUX-$OFED_VERSION-ubuntu18.04-x86_64/DEBS && \
+    for dep in libibverbs1 libibverbs-dev ibverbs-utils libmlx4-1 libmlx5-1 librdmacm1 librdmacm-dev libibumad libibumad-devel libibmad libibmad-devel; do \
+        dpkg -i $dep\_*_amd64.deb; \
+    done && \
+    cd ../.. && \
+    rm -rf MLNX_OFED_LINUX-*
+
 # ==================================================================
 # apex
 # ------------------------------------------------------------------
