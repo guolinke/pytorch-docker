@@ -102,7 +102,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         pyyaml \
         typing \
         && \
-    $PIP_INSTALL torch torchvision \
+    $PIP_INSTALL torch==1.4.0 torchvision==0.5.0 -f https://download.pytorch.org/whl/torch_stable.html \
         && \
 # ==================================================================
 # IB
