@@ -109,7 +109,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # ------------------------------------------------------------------
 # Install Mellanox OFED user-mode drivers and its prereqs
 cd $(mktemp -d) && \
-RUN DEBIAN_FRONTEND=noninteractive \
+    DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
     # For MLNX OFED
         dnsutils \
@@ -156,7 +156,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
         dpkg -i $dep\_*_amd64.deb; \
     done && \
     cd ../.. && \
-    rm -rf MLNX_OFED_LINUX-*
+    rm -rf MLNX_OFED_LINUX-* && \
 
 # ==================================================================
 # apex
