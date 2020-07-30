@@ -1,8 +1,8 @@
 # ==================================================================
 # module list
 # ------------------------------------------------------------------
-# python        3.6    (apt)
-# pytorch       1.4.0  (pip)
+# python        3.7    (conda)
+# pytorch       1.4.0  (conda)
 # apex          from github
 # ==================================================================
 
@@ -10,7 +10,6 @@ FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 ENV LANG C.UTF-8
 ENV OFED_VERSION=4.4-1.0.0.0
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
-    PIP_INSTALL="python -m pip install --upgrade --no-cache-dir --retries 10 --timeout 60" && \
     GIT_CLONE="git clone --depth 10" && \
 
     rm -rf /var/lib/apt/lists/* \
@@ -32,6 +31,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         build-essential \
         apt-utils \
         ca-certificates \
+        libnccl2=2.4.8-1+cuda10.1 \
         wget \
         git \
         vim \
@@ -45,70 +45,38 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
     cd ~/cmake && \
     ./bootstrap && \
-    make -j"$(nproc)" install && \
+    make -j"$(nproc)" install 
 
 # ==================================================================
 # python
 # ------------------------------------------------------------------
 
-    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-        software-properties-common \
-        && \
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get update && \
-    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-        python3.6 \
-        python3.6-dev \
-        python3-distutils-extra \
-        && \
-    wget -O ~/get-pip.py \
-        https://bootstrap.pypa.io/get-pip.py && \
-    python3.6 ~/get-pip.py && \
-    ln -s /usr/bin/python3.6 /usr/local/bin/python3 && \
-    ln -s /usr/bin/python3.6 /usr/local/bin/python && \
-    $PIP_INSTALL \
-        setuptools \
-        && \
-    $PIP_INSTALL \
-        numpy \
-        scipy \
-        pandas \
-        cloudpickle \
-        scikit-image>=0.14.2 \
-        scikit-learn \
-        matplotlib \
-        Cython \
-        tqdm \
-        tensorboardX \
-        six \
-        lmdb \
-        pyarrow \
-        py-lz4framed \
-        methodtools \
-        pathlib \
-        regex \
-        cython \
-        && \
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+RUN locale
+# Set timezone
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+ENV PATH /usr/local/nvidia/bin:/usr/local/nvidia/lib64:$PATH
+ENV LD_LIBRARY_PATH /usr/local/nvidia/lib64:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+ENV PYTHON_VERSION=3.7
+RUN wget -O ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh  && \
+     chmod +x ~/miniconda.sh && \
+     ~/miniconda.sh -b -p /opt/conda && \
+     rm ~/miniconda.sh
+ENV PATH /opt/conda/bin:$PATH
+RUN conda install -y python=3.7 numpy scipy h5py scikit-learn matplotlib dask pandas pyyaml mkl
+# install pytorch
+RUN conda install -y pytorch=1.4 torchvision cudatoolkit=10.1 -c pytorch
+# install more
+RUN pip install tensorboard tensorboardX six tqdm lmdb pyarrow py-lz4framed methodtools pathlib regex cython cffi sacrebleu
 
-# ==================================================================
-# pytorch
-# ------------------------------------------------------------------
 
-    $PIP_INSTALL \
-        future \
-        numpy \
-        protobuf \
-        enum34 \
-        pyyaml \
-        typing \
-        && \
-    $PIP_INSTALL torch==1.4.0 torchvision==0.5.0 -f https://download.pytorch.org/whl/torch_stable.html \
-        && \
 # ==================================================================
 # IB
 # ------------------------------------------------------------------
 # Install Mellanox OFED user-mode drivers and its prereqs
-cd $(mktemp -d) && \
+Run cd $(mktemp -d) && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
     # For MLNX OFED
@@ -156,17 +124,15 @@ cd $(mktemp -d) && \
         dpkg -i $dep\_*_amd64.deb; \
     done && \
     cd ../.. && \
-    rm -rf MLNX_OFED_LINUX-* && \
+    rm -rf MLNX_OFED_LINUX-*
 
 # ==================================================================
 # apex
 # ------------------------------------------------------------------
-
-cd $(mktemp -d) && \
+RUN cd $(mktemp -d) && \
 git clone -q https://github.com/NVIDIA/apex.git && \
 cd apex && \
-git reset --hard 80b90b9d43e343c7d4df7f6081a4ceaee2d3c348 && \
-$PIP_INSTALL -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--deprecated_fused_adam" --global-option="--fast_multihead_attn" ./ && \
+pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--deprecated_fused_adam" --global-option="--fast_multihead_attn" ./ && \
 
 # ==================================================================
 # blobfuse
