@@ -11,7 +11,6 @@ ENV LANG C.UTF-8
 ENV OFED_VERSION=4.4-1.0.0.0
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     GIT_CLONE="git clone --depth 10" && \
-
     rm -rf /var/lib/apt/lists/* \
            /etc/apt/sources.list.d/cuda.list \
            /etc/apt/sources.list.d/nvidia-ml.list && \
@@ -46,6 +45,17 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     cd ~/cmake && \
     ./bootstrap && \
     make -j"$(nproc)" install 
+
+
+# ==================================================================
+# blobfuse
+# ------------------------------------------------------------------
+
+RUN cd $(mktemp -d) && \
+wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
+dpkg -i packages-microsoft-prod.deb && \
+apt-get update && \
+$APT_INSTALL blobfuse
 
 # ==================================================================
 # python
@@ -132,23 +142,14 @@ Run cd $(mktemp -d) && \
 RUN cd $(mktemp -d) && \
 git clone -q https://github.com/NVIDIA/apex.git && \
 cd apex && \
-pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--deprecated_fused_adam" --global-option="--fast_multihead_attn" ./ && \
+pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--deprecated_fused_adam" ./ 
 
-# ==================================================================
-# blobfuse
-# ------------------------------------------------------------------
-
-cd $(mktemp -d) && \
-wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
-dpkg -i packages-microsoft-prod.deb && \
-apt-get update && \
-$APT_INSTALL blobfuse && \
 
 # ==================================================================
 # config & cleanup
 # ------------------------------------------------------------------
 
-    ldconfig && \
+RUN ldconfig && \
     apt-get clean && \
     apt-get autoremove && \
     rm -rf /var/lib/apt/lists/* /tmp/* ~/*
