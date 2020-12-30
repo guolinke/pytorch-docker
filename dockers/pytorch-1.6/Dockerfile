@@ -136,10 +136,6 @@ apt-get install -y blobfuse
 # python
 # ------------------------------------------------------------------
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-RUN locale
 # Set timezone
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 ENV PATH /usr/local/nvidia/bin:/usr/local/nvidia/lib64:$PATH
