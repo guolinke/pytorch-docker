@@ -35,7 +35,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         build-essential \
         apt-utils \
         ca-certificates \
-        libnccl2=2.8.3-1+cuda11.0 \
+        libnccl2=2.7.8-1+cuda11.0 \
         wget \
         git \
         vim \
