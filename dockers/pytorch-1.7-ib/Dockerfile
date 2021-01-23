@@ -105,21 +105,6 @@ Run cd $(mktemp -d) && \
     cd .. && \
     rm -rf MLNX_OFED_LINUX-*
 
-##################### OPENMPI #####################
-
-RUN wget -q -O - https://www.open-mpi.org/software/ompi/v${OPENMPI_VERSIONBASE}/downloads/${OPENMPI_STRING}.tar.gz | tar -xzf - && \
-    cd ${OPENMPI_STRING} && \
-    ./configure --prefix=/usr/local/${OPENMPI_STRING} && \
-    make -j"$(nproc)" install && \
-    rm -rf $STAGE_DIR/${OPENMPI_STRING} && \
-    ln -s /usr/local/${OPENMPI_STRING} /usr/local/mpi && \
-    # Sanity check:
-    test -f /usr/local/mpi/bin/mpic++
-
-# Update environment variables
-ENV PATH=/usr/local/mpi/bin:$PATH \
-    LD_LIBRARY_PATH=/usr/local/lib:/usr/local/mpi/lib:/usr/local/mpi/lib64:$LD_LIBRARY_PATH
-
 # ==================================================================
 # blobfuse
 # ------------------------------------------------------------------
