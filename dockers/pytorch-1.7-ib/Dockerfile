@@ -88,7 +88,6 @@ Run cd $(mktemp -d) && \
         bison \
         flex \
         libnuma1 \
-        libnl1 \
         checkinstall && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
