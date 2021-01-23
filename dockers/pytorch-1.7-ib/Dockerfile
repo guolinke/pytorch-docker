@@ -92,6 +92,14 @@ Run cd $(mktemp -d) && \
         checkinstall && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
+    # libnl1 is not available in ubuntu16 so build from source
+    wget -q -O - http://www.infradead.org/~tgr/libnl/files/libnl-1.1.4.tar.gz | tar xzf - && \
+    cd libnl-1.1.4 && \
+    ./configure && \
+    make && \
+    checkinstall -D --showinstall=no --install=yes -y -pkgname=libnl1 -A amd64 && \
+    cd .. && \
+    rm -rf libnl-1.1.4 && \
     wget -q -O - http://www.mellanox.com/downloads/ofed/MLNX_OFED-$OFED_VERSION/MLNX_OFED_LINUX-$OFED_VERSION-ubuntu18.04-x86_64.tgz | tar xzf - && \
     cd MLNX_OFED_LINUX-$OFED_VERSION-ubuntu18.04-x86_64 && \
     ./mlnxofedinstall --add-kernel-support && \
