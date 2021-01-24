@@ -105,6 +105,10 @@ Run cd $(mktemp -d) && \
     cd .. && \
     rm -rf MLNX_OFED_LINUX-*
 
+# Update environment variables
+ENV PATH=/usr/mpi/gcc/openmpi-4.1.0rc5/bin:$PATH \
+    LD_LIBRARY_PATH=/usr/mpi/gcc/openmpi-4.1.0rc5/lib:$LD_LIBRARY_PATH
+
 # ==================================================================
 # blobfuse
 # ------------------------------------------------------------------
