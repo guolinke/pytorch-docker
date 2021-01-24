@@ -142,7 +142,7 @@ RUN pip install tensorboard tensorboardX six tqdm lmdb pyarrow py-lz4framed meth
 RUN cd $(mktemp -d) && \
 git clone -q https://github.com/NVIDIA/apex.git && \
 cd apex && \
-git reset -hard 154c6336aa7aedd40d3b3583fb5e1328f9cdf387 && \
+git reset --hard 154c6336aa7aedd40d3b3583fb5e1328f9cdf387 && \
 pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--deprecated_fused_adam" --global-option="--fast_multihead_attn" ./ 
 
 
