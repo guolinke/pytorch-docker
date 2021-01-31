@@ -133,6 +133,8 @@ ENV PATH /opt/conda/bin:$PATH
 RUN conda install -y python=3.7 numpy scipy h5py scikit-learn matplotlib dask pandas pyyaml mkl
 # install pytorch
 RUN conda install pytorch=1.7.1 torchvision torchaudio cudatoolkit=11.0 -c pytorch
+# force update numpy by pip due to cython error
+RUN pip install numpy --upgrade
 # install more
 RUN pip install tensorboard tensorboardX six tqdm lmdb pyarrow py-lz4framed methodtools pathlib regex cython cffi sacrebleu editdistance
 
