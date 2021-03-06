@@ -11,8 +11,6 @@ FROM nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04
 ENV LANG C.UTF-8
 ENV OFED_VERSION=5.2-1.0.4.0
 
-RUN apt update && apt install -y  -f --no-install-recommends libnccl2=2.8.4-1+cuda11.1
-
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     GIT_CLONE="git clone --depth 10" && \
     rm -rf /var/lib/apt/lists/* \
@@ -146,7 +144,6 @@ RUN pip install tensorboard tensorboardX six tqdm lmdb pyarrow py-lz4framed meth
 RUN cd $(mktemp -d) && \
 git clone -q https://github.com/NVIDIA/apex.git && \
 cd apex && \
-git reset --hard 154c6336aa7aedd40d3b3583fb5e1328f9cdf387 && \
 pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--deprecated_fused_adam" --global-option="--fast_multihead_attn" --global-option="--xentropy" ./ 
 
 
