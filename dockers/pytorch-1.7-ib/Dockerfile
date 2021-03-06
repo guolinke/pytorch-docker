@@ -11,7 +11,7 @@ FROM nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04
 ENV LANG C.UTF-8
 ENV OFED_VERSION=5.2-1.0.4.0
 
-RUN /bin/sh -c apt-get update && apt-get install -y --no-install-recommends libnccl2=2.8.4-1+cuda11.1 -f
+RUN /bin/sh -c apt update && apt install -y  -f --no-install-recommends libnccl2=2.8.4-1+cuda11.1
 
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     GIT_CLONE="git clone --depth 10" && \
