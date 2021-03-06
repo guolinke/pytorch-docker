@@ -135,7 +135,7 @@ RUN wget -O ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest
 ENV PATH /opt/conda/bin:$PATH
 RUN conda install -y python=3.7 numpy scipy h5py scikit-learn matplotlib dask pandas pyyaml mkl
 # install pytorch
-RUN conda install pytorch=1.8.0 torchvision torchaudio cudatoolkit=11.1 -c pytorch
+RUN conda install pytorch=1.8.0 torchvision torchaudio cudatoolkit=11.1 -c pytorch -c conda-forge
 # force update numpy by pip due to cython error
 RUN pip install numpy --upgrade
 # install more
