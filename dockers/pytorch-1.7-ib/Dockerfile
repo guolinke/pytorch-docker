@@ -2,14 +2,18 @@
 # module list
 # ------------------------------------------------------------------
 # python        3.7    (conda)
-# pytorch       1.7.1  (conda)
+# pytorch       1.8.0  (conda)
 # apex          from github
 # ==================================================================
 
-FROM nvidia/cuda:11.0-cudnn8-devel-ubuntu18.04
+FROM nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04
 
 ENV LANG C.UTF-8
 ENV OFED_VERSION=5.2-1.0.4.0
+
+RUN apt-mark unhold libnccl & apt remove libnccl2
+
+RUN /bin/sh -c apt-get update && apt-get install -y --no-install-recommends libnccl2=2.8.4-1+cuda11.1
 
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     GIT_CLONE="git clone --depth 10" && \
@@ -32,7 +36,6 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         build-essential \
         apt-utils \
         ca-certificates \
-        libnccl2=2.8.4-1+cuda11.0 \
         wget \
         git \
         vim \
@@ -132,7 +135,7 @@ RUN wget -O ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest
 ENV PATH /opt/conda/bin:$PATH
 RUN conda install -y python=3.7 numpy scipy h5py scikit-learn matplotlib dask pandas pyyaml mkl
 # install pytorch
-RUN conda install pytorch=1.7.1 torchvision torchaudio cudatoolkit=11.0 -c pytorch
+RUN conda install pytorch=1.8.0 torchvision torchaudio cudatoolkit=11.1 -c pytorch
 # force update numpy by pip due to cython error
 RUN pip install numpy --upgrade
 # install more
