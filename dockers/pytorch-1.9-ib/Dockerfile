@@ -146,7 +146,8 @@ RUN conda install -y numpy pyyaml scipy ipython mkl mkl-include ninja cython typ
     conda install -y -c pytorch magma-cuda110 && \
     conda clean -ya
 
-RUN git clone -q https://github.com/chengsyuan/pytorch.git && \
+RUN cd $(mktemp -d) && \
+    git clone -q https://github.com/chengsyuan/pytorch.git && \
     cd pytorch && \
     git submodule sync && git submodule update --init --recursive && \
     CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" && \
@@ -161,6 +162,10 @@ RUN cd $(mktemp -d) && \
     cd apex && \
     pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--deprecated_fused_adam" --global-option="--fast_multihead_attn" --global-option="--xentropy" ./ 
 
+RUN cd $(mktemp -d) && \
+    git clone -q https://github.com/guolinke/fused_ops.git && \
+    cd fused_ops && \
+    pip install ./
 # ==================================================================
 # config & cleanup
 # ------------------------------------------------------------------
