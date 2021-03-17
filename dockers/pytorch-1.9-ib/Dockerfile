@@ -160,7 +160,7 @@ RUN cd $(mktemp -d) && \
 RUN cd $(mktemp -d) && \
     git clone -q https://github.com/NVIDIA/apex.git && \
     cd apex && \
-    pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--deprecated_fused_adam" ./ 
+    pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--deprecated_fused_adam" --global-option="--fast_multihead_attn" --global-option="--xentropy" ./ 
 
 RUN cd $(mktemp -d) && \
     git clone -q https://github.com/guolinke/fused_ops.git && \
