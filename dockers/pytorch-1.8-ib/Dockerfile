@@ -2,7 +2,7 @@
 # module list
 # ------------------------------------------------------------------
 # python        3.7    (conda)
-# pytorch       1.8.0  (https://github.com/guolinke/pytorch/tree/release-1.8-bf16)
+# pytorch       1.8.0  (https://github.com/guolinke/pytorch/tree/1.8.1-bf16)
 # apex          from github
 # ==================================================================
 
@@ -147,7 +147,7 @@ RUN conda install -y numpy pyyaml scipy ipython mkl mkl-include ninja cython typ
     conda clean -ya
 
 RUN cd $(mktemp -d) && \
-    git clone -q https://github.com/guolinke/pytorch.git -b release-1.8-bf16 && \
+    git clone -q https://github.com/guolinke/pytorch.git -b 1.8.1-bf16 && \
     cd pytorch && \
     git submodule sync && git submodule update --init --recursive && \
     CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" && \
